@@ -1,1 +1,8 @@
 spring.application.name=coupon-core
+
+spring.datasource.url=jdbc:mariadb://leevelop.com:2906/modooagit
+spring.datasource.username=merong2969
+spring.datasource.password=Seung0075!
+spring.datasource.driver-class-name=org.mariadb.jdbc.Driver
+spring.jpa.show-sql=true
+spring.jpa.hibernate.ddl-auto=none
