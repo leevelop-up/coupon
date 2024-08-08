@@ -37,3 +37,4 @@ out/
 .vscode/
 /monitoring/grafana/
 /monitoring/prometheus/
+coupon-core/src/main/resources/application-core.yml
