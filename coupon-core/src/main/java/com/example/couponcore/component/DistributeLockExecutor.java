@@ -25,7 +25,12 @@ public class DistributeLockExecutor {
             }
             logic.run();
         } catch (InterruptedException e) {
-            log.error(e.getMessage(), e);
+            log.error("락을 획득하는 동안 스레드가 인터럽트됨: {}, lockName: {}, waitMilliSecond: {}, leaseMilliSecond: {}",
+                    Thread.currentThread().getName(), lockName, waitMilliSecond, leaseMilliSecond, e);
+            // 인터럽트 상태 복원
+            Thread.currentThread().interrupt();
+        } catch (Exception e) {
+            log.error("락과 함께 로직을 실행하는 동안 예외 발생: {}", lockName, e);
             throw new RuntimeException(e);
         } finally {
             if (lock.isHeldByCurrentThread()) {

@@ -24,13 +24,19 @@ public class CouponIssueService {
     @Transactional
     public void issue(long couponId, long userId){
         //2개 이상의 쓰레드가 동시에 접근하지 못하도록 synchronized 블록으로 동기화 처리
-        Coupon coupon = findCoupon(couponId); //쿠폰이 존재하는지 확인
+        Coupon coupon = findCouponWithLock(couponId); //쿠폰이 존재하는지 확인
         coupon.issue(); //쿠폰 검증후 발급수량 증가
         saveCouponIssue(couponId, userId);
     }
     @Transactional(readOnly = true)
     public Coupon findCoupon(long couponId){
         return couponJpaRepository.findById(couponId).orElseThrow(()->{
+            throw new CouponIssueException(COUPON_NOT_EXIST,"쿠폰 정책이 존재하지 않습니다.%s".formatted(couponId));
+        });
+    }
+    @Transactional(readOnly = true)
+    public Coupon findCouponWithLock(long couponId){
+        return couponJpaRepository.findCouponWithLockById(couponId).orElseThrow(()->{
             throw new CouponIssueException(COUPON_NOT_EXIST,"쿠폰 정책이 존재하지 않습니다.%s".formatted(couponId));
         });
     }

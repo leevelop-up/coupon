@@ -16,10 +16,12 @@ public class CouponIssueRequestService {
     private final Logger logger = Logger.getLogger(CouponIssueRequestService.class.getName());
 
     public void issueRequestV1(CouponIssueRequestDto requestDto){
-        //redis 를 사용하여 동기화 처리
-        distributeLockExecutor.execute("lock_"+requestDto.couponId(),10000,10000,()->{
-            couponIssueService.issue(requestDto.couponId(), requestDto.userId());
-        });
+        couponIssueService.issue(requestDto.couponId(), requestDto.userId());
+
+//        //redis 를 사용하여 동기화 처리
+//        distributeLockExecutor.execute("lock_"+requestDto.couponId(),10000,10000,()->{
+//            couponIssueService.issue(requestDto.couponId(), requestDto.userId());
+//        });
 
         //synchronized 블록으로 동기화 처리
 //        synchronized (this) {
