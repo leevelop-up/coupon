@@ -7,8 +7,8 @@ spring:
   datasource:
     url: jdbc:mariadb://leevelop.com:2906/modooagit
     driver-class-name: org.mariadb.jdbc.Driver
-    username: merong2969
-    password: Seung0075!
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
     hikari:
       maximum-pool-size: 10
       max-lifetime: 30000
@@ -34,8 +34,8 @@ spring:
   datasource:
     url: jdbc:mariadb://leevelop.com:2906/modooagit
     driver-class-name: org.mariadb.jdbc.Driver
-    username: merong2969
-    password: Seung0075!
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
     hikari:
       maximum-pool-size: 10
       max-lifetime: 30000
