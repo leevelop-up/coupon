@@ -37,7 +37,7 @@ subprojects {
         compileOnly("org.projectlombok:lombok")
         annotationProcessor("org.projectlombok:lombok")
         runtimeOnly("com.h2database:h2")
-        runtimeOnly("com.mysql:mysql-connector-j")
+        //runtimeOnly("com.mysql:mysql-connector-j")
         runtimeOnly("org.mariadb.jdbc:mariadb-java-client:2.7.3")
         implementation("org.springframework.boot:spring-boot-starter")
         implementation("com.querydsl:querydsl-jpa:5.0.0:jakarta")
