@@ -7,6 +7,7 @@ import com.example.couponcore.exception.ErrorCode;
 import com.example.couponcore.model.Coupon;
 import com.example.couponcore.repository.redis.dto.CouponIssueRequest;
 import com.example.couponcore.repository.redis.RedisRepository;
+import com.example.couponcore.repository.redis.dto.CouponRedisEntity;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
@@ -21,25 +22,18 @@ public class AsyncCouponIssueServiceV1 {
     private final RedisRepository redisRepository;
     private final CouponIssueRedisService couponIssueRedisService;
     private final CouponIssueService couponIssueService;
+    private final CouponCacheService couponCacheService;
     private final DistributeLockExecutor distributeLockExecutor;
     private final ObjectMapper objectMapper = new ObjectMapper();
 
     public void issue(long couponId, long userId){
-        Coupon coupon = couponIssueService.findCoupon(couponId);
-        if(!coupon.availableIssueDate()){
-            throw new CouponIssueException(ErrorCode.INVALID_COUPON_ISSUE_DATE,"쿠폰 발급 기간이 아닙니다.");
-        }
-        distributeLockExecutor.execute("lock_%s".formatted(couponId), 3000,3000, ()->{
-            //쿠폰 존재 확인
-            if(!couponIssueRedisService.availableTotalIssueQuantity(couponId, coupon.getTotalQuantity())){
-                throw new CouponIssueException(ErrorCode.INVALID_COUPON_ISSUE_QUANTITY,"쿠폰 발급 가능 수량 초과");
-            }
-            //중복발급 확인
-            if(!couponIssueRedisService.availableUserIssueQuantity(couponId, userId)){
-                throw new CouponIssueException(ErrorCode.INVALID_COUPON_ISSUE_QUANTITY,"이미 발급된 쿠폰입니다.");
-            }
-            issueCoupon(couponId, userId);
-        });
+        CouponRedisEntity coupon = couponCacheService.getCouponCache(couponId);
+        coupon.checkIssuableCoupon();
+        //lock을 걸고 해제하는 부분이 원인이 될 수 있다.
+
+        couponIssueRedisService.checkCouponIssueQuantity(coupon,userId);
+        issueCoupon(couponId, userId);
+
     }
     private void issueCoupon(long couponId, long userId){
         CouponIssueRequest IssueRequest = new CouponIssueRequest(couponId, userId);

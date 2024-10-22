@@ -6,6 +6,7 @@ import com.example.couponcore.model.CouponType;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateDeserializer;
+import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
 
 import java.time.LocalDateTime;
@@ -17,13 +18,12 @@ public record CouponRedisEntity (
     CouponType couponType,
     Integer TotalQuantity,
     @JsonSerialize(using = LocalDateTimeSerializer.class)
-    @JsonDeserialize(using = LocalDateDeserializer.class)
+    @JsonDeserialize(using = LocalDateTimeDeserializer.class)
     LocalDateTime dateIssueStart,
+
     @JsonSerialize(using = LocalDateTimeSerializer.class)
-    @JsonDeserialize(using = LocalDateDeserializer.class)
+    @JsonDeserialize(using = LocalDateTimeDeserializer.class)
     LocalDateTime dateIssueEnd
-
-
 ){
     public CouponRedisEntity(Coupon coupon){
         this(
@@ -34,13 +34,14 @@ public record CouponRedisEntity (
                 coupon.getDateIssueEnd()
         );
     }
+
     private boolean availableIssueDate() {
         LocalDateTime now = LocalDateTime.now();
         return dateIssueStart.isBefore(now) && dateIssueEnd.isAfter(now);
     }
 
     public void checkIssuableCoupon() {
-        i
+
         if (!availableIssueDate()) {
             throw new CouponIssueException(INVALID_COUPON_ISSUE_DATE, "발급 가능한 일자가 아닙니다. request : %s, issueStart: %s, issueEnd: %s".formatted(LocalDateTime.now(), dateIssueStart, dateIssueEnd));
         }
