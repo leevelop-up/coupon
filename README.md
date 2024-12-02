@@ -18,7 +18,7 @@ Java 17, Spring Boot 3.1, Spring Mvc, JPA, QueryDsl
 MariaDB, Redis
 
 **Monitoring**   
-Aws Cloud Watch, Spring Actuator, Promethous, Grafana
+Spring Actuator, Promethous, Grafana
 
 **Etc**  
 Locust, Gradle, Docker
