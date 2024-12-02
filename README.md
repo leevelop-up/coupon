@@ -1,6 +1,6 @@
 ![image](https://github.com/user-attachments/assets/23b3de46-3355-49ad-b93d-7fa10f500140)
 ## Background
-네고왕 선착순 쿠폰 이벤트는 한정된 수량의 쿠폰을 먼저 신청한 사용자에게 제공하는 이벤트
+쿠폰 이벤트는 한정된 수량의 쿠폰을 먼저 신청한 사용자에게 제공하는 이벤트
 
 ## Requirements
 - 이벤트 기간내 발급이 가능합니다.
