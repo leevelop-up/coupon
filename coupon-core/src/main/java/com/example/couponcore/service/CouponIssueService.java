@@ -3,10 +3,12 @@ package com.example.couponcore.service;
 import com.example.couponcore.exception.CouponIssueException;
 import com.example.couponcore.model.Coupon;
 import com.example.couponcore.model.CouponIssue;
+import com.example.couponcore.model.event.CouponIssueCompleteEvent;
 import com.example.couponcore.repository.mariadb.CouponIssueJpaRepository;
 import com.example.couponcore.repository.mariadb.CouponIssueRepository;
 import com.example.couponcore.repository.mariadb.CouponJpaRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -20,6 +22,7 @@ public class CouponIssueService {
     private final CouponJpaRepository couponJpaRepository;
     private final CouponIssueRepository couponIssueRepository;
     private final CouponIssueJpaRepository couponIssueJpaRepository;
+    private final ApplicationEventPublisher applicationEventPublisher;
 
     @Transactional
     public void issue(long couponId, long userId){
@@ -27,6 +30,7 @@ public class CouponIssueService {
         Coupon coupon = findCouponWithLock(couponId); //쿠폰이 존재하는지 확인
         coupon.issue(); //쿠폰 검증후 발급수량 증가
         saveCouponIssue(couponId, userId);
+        publishCouponEvent(coupon);
     }
     @Transactional(readOnly = true)
     public Coupon findCoupon(long couponId){
@@ -55,6 +59,11 @@ public class CouponIssueService {
         CouponIssue couponIssue = couponIssueRepository.findeFirstCouponIssue(couponId, userid);
         if(couponIssue != null){
             throw new CouponIssueException(COUPON_ALREADY_ISSUED,"이미 발급된 쿠폰입니다. userId:%s, couponId%s".formatted(userid,couponId));
+        }
+    }
+    private void publishCouponEvent(Coupon coupon){
+        if(coupon.isIssueComplete()){
+            applicationEventPublisher.publishEvent(new CouponIssueCompleteEvent(coupon.getId()));
         }
     }
 }

@@ -56,17 +56,15 @@ spring:
   config:
     activate:
       on-profile: prod
-  application:
-    name: coupon-core
   datasource:
     hikari:
-      jdbc-url: jdbc:mariadb://PROD_URL/coupon?useUnicode=yes&characterEncoding=UTF-8&rewriteBatchedStatements=true
-      driver-class-name: org.mariadb.jdbc.Driver
+      jdbc-url: jdbc:mysql://PROD_URL:3306/coupon?useUnicode=yes&characterEncoding=UTF-8&rewriteBatchedStatements=true
+      driver-class-name: com.mysql.cj.jdbc.Driver
       maximum-pool-size: 10
       max-lifetime: 30000
       connection-timeout: 3000
-      username: ${DB_USERNAME}
-      password: ${DB_PASSWORD}
+      username: PROD_USER_NAME
+      password: PROD_PASSWORD
   jpa:
     hibernate:
       ddl-auto: none
